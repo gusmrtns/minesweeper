@@ -3,6 +3,8 @@ package modelo;
 import java.util.ArrayList;
 import java.util.List;
 
+import excecao.ExplosaoException;
+
 public class Campo {
 
 	private final int linha;
@@ -50,4 +52,64 @@ public class Campo {
 		
 	}
 	
+	// tirar ou colocar marcação de bomba num campo
+	public void alternarMarcacao() {
+		// ao realizar a ação testar se o campo já não está aberto, se não estiver marcar
+		if(!aberto) {
+			marcado = !marcado;
+		}
+		
+	}
+	
+	// abrir o campo
+	public boolean abrir() {
+		// testar se o campo está fechado e não está marcado, se estivar marcado não poderá ser aberto
+		if(!aberto && !marcado) {
+			aberto = true;
+			
+			// testar se tem bomba
+			if(minado) {
+				throw new ExplosaoException();
+			}
+			
+			if(vizinhancaSegura()) {
+				vizinhos.forEach(v -> v.abrir());
+			}
+			
+			return true;
+			
+		} else {
+			return false;
+		}
+	}
+	
+	boolean vizinhancaSegura() {
+		
+		return vizinhos.stream().noneMatch(v -> v.minado);
+		
+	}
+	
+	public void Minar() {
+		
+		minado = true;
+		
+	}
+	
+	public boolean isMarcado() {
+		return marcado;
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
